@@ -11,8 +11,11 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "@types"],
     "types": ["node", "express"],
     "resolveJsonModule": true
+  },
+  "ts-node": {
+    "files": true
   }
 }

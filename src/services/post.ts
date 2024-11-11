@@ -1,18 +1,22 @@
 import { Post } from "../entity/Post";
-import { IPostRepository } from "../repositories/post";
+import { IPostRepository, PostRepository } from "../repositories/post";
+import { IGetPostsSchema, IUpdatePostSchema } from "../schemas/post.schema";
 import {
-  ICreatePostSchema,
-  IGetPostsSchema,
-  IUpdatePostSchema
-} from "../schemas/post.schema";
-import { BadRequestError, NotFoundError } from "../utils/errors";
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError
+} from "../utils/errors";
 import { isEmpty } from "../utils/object";
 import { Pagination } from "../utils/responseWrapper";
 
 export class PostService {
-  constructor(private postRepository: IPostRepository) {}
+  private postRepository: IPostRepository;
 
-  async createPost(payload: ICreatePostSchema["body"]): Promise<Post> {
+  constructor() {
+    this.postRepository = new PostRepository();
+  }
+
+  async createPost(payload: Partial<Post>): Promise<Post> {
     const postPayload = this.postRepository.create(payload);
     const post = await this.postRepository.save(postPayload);
     return post;
@@ -55,13 +59,20 @@ export class PostService {
 
   async updatePost(
     id: string,
-    payload: IUpdatePostSchema["body"]
+    payload: IUpdatePostSchema["body"],
+    userId: number
   ): Promise<Post> {
     const post = await this.getPostById(id);
 
     if (isEmpty(payload)) {
       throw new BadRequestError({
         message: "Payload is required"
+      });
+    }
+
+    if (post.userId !== userId) {
+      throw new UnauthorizedError({
+        message: "You are not allowed to update this post"
       });
     }
 
@@ -73,8 +84,13 @@ export class PostService {
     return updatedPost;
   }
 
-  async deletePost(id: string) {
+  async deletePost(id: string, userId: number) {
     const post = await this.getPostById(id);
+    if (post.userId !== userId) {
+      throw new UnauthorizedError({
+        message: "You are not allowed to delete this post."
+      });
+    }
     await this.postRepository.delete({ id: post.id });
   }
 }

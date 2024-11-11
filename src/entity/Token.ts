@@ -10,21 +10,30 @@ import {
 } from "typeorm";
 import { User } from "./User";
 
-@Entity("posts")
-export class Post {
+export enum TokenStatus {
+  ACTIVE = "active",
+  USED = "used",
+  REVOKED = "revoked"
+}
+
+@Entity("tokens")
+export class Token {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ name: "user_id" })
   @Index()
-  title: string;
+  userId: number;
 
-  @Column({ type: "varchar", length: 1000 })
-  content: string;
-
-  @Column("text", { array: true, nullable: true })
+  @Column({ name: "refresh_token", unique: true })
   @Index()
-  tags: string[];
+  refreshToken: string;
+
+  @Column({ name: "expires_at", type: "timestamp" })
+  expiresAt: Date;
+
+  @Column({ type: "enum", enum: TokenStatus, default: TokenStatus.ACTIVE })
+  status: TokenStatus;
 
   @CreateDateColumn({ type: "timestamp", name: "created_at" })
   createdAt: Date;
@@ -32,12 +41,7 @@ export class Post {
   @UpdateDateColumn({ type: "timestamp", name: "updated_at" })
   updatedAt: Date;
 
-  @Column({ name: "user_id" })
-  @Index()
-  userId: number;
-
-  @ManyToOne(() => User, (user) => user.posts, {
-    onUpdate: "CASCADE",
+  @ManyToOne(() => User, (user) => user.tokens, {
     onDelete: "CASCADE"
   })
   @JoinColumn({ name: "user_id" })

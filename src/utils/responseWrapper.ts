@@ -3,7 +3,7 @@ import { Response } from "express";
 export class ApiResponse {
   static success(
     res: Response,
-    data: any,
+    data: unknown,
     message: string = "Success",
     status: number,
     meta?: Pagination
@@ -18,7 +18,7 @@ export class ApiResponse {
 
   static ok(
     res: Response,
-    data: any,
+    data: unknown,
     message: string = "Success",
     meta?: Pagination
   ) {
@@ -27,7 +27,7 @@ export class ApiResponse {
 
   static created(
     res: Response,
-    data: any,
+    data: unknown,
     message: string = "Created Successfully"
   ) {
     return ApiResponse.success(res, data, message, 201);
@@ -52,6 +52,18 @@ export class ApiError {
 
   static notFound(res: Response, message: string = "Not Found") {
     return ApiError.error(res, message, 404);
+  }
+
+  static conflict(res: Response, message: string = "Conflict") {
+    return ApiError.error(res, message, 409);
+  }
+
+  static unauthorized(res: Response, message: string = "Unauthorized") {
+    return ApiError.error(res, message, 401);
+  }
+
+  static forbidden(res: Response, message: string = "Forbidden") {
+    return ApiError.error(res, message, 403);
   }
 
   static internalServerError(

@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { IsEmail, IsStrongPassword, MinLength } from "class-validator";
 import { Post } from "./Post";
+import { Token } from "./Token";
 
 @Entity("users")
 export class User {
@@ -15,25 +15,12 @@ export class User {
   id: number;
 
   @Column({ unique: true })
-  @MinLength(3, { message: "Username must be 3 characters long" })
   username: string;
 
   @Column({ unique: true })
-  @IsEmail(null, { message: "Invalid email" })
-  @MinLength(1)
   email: string;
 
   @Column({ select: false })
-  @IsStrongPassword(
-    {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1
-    },
-    { message: "Password is weak" }
-  )
   password: string;
 
   @CreateDateColumn({ type: "timestamp", name: "created_at" })
@@ -44,4 +31,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Token, (token) => token.user)
+  tokens: Token[];
 }

@@ -1,22 +1,24 @@
 import { Request, Response } from "express";
-import { PostRepository } from "../repositories/post";
 import {
   CreatePostSchema,
   GetPostsSchema,
   UpdatePostSchema,
-  GetIdSchema
+  GetIdSchema,
+  DeletePostSchema
 } from "../schemas/post.schema";
 import { PostService } from "../services/post";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/responseWrapper";
 import { zParse } from "../utils/zParse";
 
-const postRepository = new PostRepository();
-const postService = new PostService(postRepository);
+const postService = new PostService();
 
 export const createPost = asyncHandler(async (req: Request, res: Response) => {
-  const { body: payload } = await zParse(req, CreatePostSchema);
-  const post = await postService.createPost(payload);
+  const { body: payload, user } = await zParse(req, CreatePostSchema);
+  const post = await postService.createPost({
+    ...payload,
+    userId: user.id
+  });
   ApiResponse.created(res, post, "Post Created Successfully");
 });
 
@@ -33,13 +35,13 @@ export const getPostById = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const updatePost = asyncHandler(async (req: Request, res: Response) => {
-  const { params, body: payload } = await zParse(req, UpdatePostSchema);
-  const post = await postService.updatePost(params.id, payload);
+  const { params, body: payload, user } = await zParse(req, UpdatePostSchema);
+  const post = await postService.updatePost(params.id, payload, user.id);
   ApiResponse.ok(res, post, "Post Updated Successfully");
 });
 
 export const deletePost = asyncHandler(async (req: Request, res: Response) => {
-  const { params } = await zParse(req, GetIdSchema);
-  await postService.deletePost(params.id);
+  const { params, user } = await zParse(req, DeletePostSchema);
+  await postService.deletePost(params.id, user.id);
   ApiResponse.noContent(res);
 });

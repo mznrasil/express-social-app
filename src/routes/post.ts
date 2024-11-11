@@ -6,10 +6,11 @@ import {
   getPosts,
   updatePost
 } from "../controllers/post";
+import { verifyJwt } from "../middlewares/verifyJwt";
 
 const postRouter = Router();
 
-postRouter.post("/", createPost);
+postRouter.post("/", verifyJwt, createPost);
 
 /**
  * @openapi
@@ -56,6 +57,10 @@ postRouter.get("/", getPosts);
  *  tag:
  *    - Posts
  */
-postRouter.route("/:id").get(getPostById).patch(updatePost).delete(deletePost);
+postRouter
+  .route("/:id")
+  .get(getPostById)
+  .patch(verifyJwt, updatePost)
+  .delete(verifyJwt, deletePost);
 
 export default postRouter;

@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { BadRequestError, NotFoundError } from "../utils/errors";
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError
+} from "../utils/errors";
 import { ApiError } from "../utils/responseWrapper";
 
 export const errorHandler = (
@@ -17,6 +23,21 @@ export const errorHandler = (
 
   if (err instanceof NotFoundError) {
     ApiError.notFound(res, err.message);
+    return;
+  }
+
+  if (err instanceof ConflictError) {
+    ApiError.conflict(res, err.message);
+    return;
+  }
+
+  if (err instanceof UnauthorizedError) {
+    ApiError.unauthorized(res, err.message);
+    return;
+  }
+
+  if (err instanceof ForbiddenError) {
+    ApiError.forbidden(res, err.message);
     return;
   }
 
