@@ -3,6 +3,9 @@ import express from "express";
 import router from "./routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import swaggerDocs from "./utils/swagger";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
