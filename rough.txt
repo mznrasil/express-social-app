@@ -1,0 +1,6 @@
+Role Based Authorization:
+1. Three roles: admin, user, guest
+2. Create a role column in User table that stores multiple roles of a user (must be enum[])
+3. When registering a user, give the user "guest" role by default
+4. Also, sign the token with user role as well
+5. Create a middleware to check the role of the user

@@ -129,7 +129,7 @@ authRouter.post("/login", loginUser);
  *  post:
  *    tags:
  *    - User
- *    summary: Refersh Token
+ *    summary: Refresh Token
  *    requestBody:
  *      required: true
  *      content:

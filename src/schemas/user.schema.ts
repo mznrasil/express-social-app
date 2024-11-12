@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {UserRole} from "../entity/User.entity";
 
 /**
  * @openapi
@@ -23,6 +24,7 @@ export const UserSchema = z.object({
   user: z.object(
     {
       id: z.coerce.number(),
+      roles: z.array(z.enum([UserRole.USER, UserRole.ADMIN])),
       iat: z.number(),
       exp: z.number()
     },

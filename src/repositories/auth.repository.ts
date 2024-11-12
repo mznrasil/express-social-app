@@ -28,7 +28,7 @@ export class AuthRepository
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.authRepository.findOne({
       where: { email },
-      select: ["id", "username", "email", "password"]
+      select: ["id", "username", "email", "password", "roles"]
     });
     return user;
   }

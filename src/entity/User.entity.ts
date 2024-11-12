@@ -9,6 +9,11 @@ import {
 import { Post } from "./Post.entity";
 import { Token } from "./Token.entity";
 
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+}
+
 @Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
@@ -28,6 +33,9 @@ export class User {
 
   @UpdateDateColumn({ type: "timestamp", name: "updated_at" })
   updatedAt: Date;
+
+  @Column({ type: "enum", array: true, enum: UserRole, default: [UserRole.USER], select: false })
+  roles: UserRole[];
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

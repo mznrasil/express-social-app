@@ -7,6 +7,8 @@ import {
   updatePost
 } from "../controllers/post.controller";
 import { verifyJwt } from "../middlewares/verifyJwt";
+import { checkRoles } from "../middlewares/checkRoles";
+import { UserRole } from "../entity/User.entity";
 
 const postRouter = Router();
 
@@ -77,7 +79,7 @@ const postRouter = Router();
  *              InternalServerErrorExample:
  *                $ref: '#/components/examples/InternalServerErrorExample'
  */
-postRouter.post("/", verifyJwt, createPost);
+postRouter.post("/", verifyJwt, checkRoles(UserRole.USER), createPost);
 
 /**
  * @openapi
@@ -217,6 +219,15 @@ postRouter.get("/", getPosts);
  *            examples:
  *              UpdatePostResponseExample:
  *                $ref: '#/components/examples/UpdatePostResponseExample'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              UnauthorizedErrorExample:
+ *                $ref: '#/components/examples/UnauthorizedErrorExample'
  *      404:
  *        description: Not Found
  *        content:
@@ -256,6 +267,15 @@ postRouter.get("/", getPosts);
  *            examples:
  *              NotFoundErrorExample:
  *                $ref: '#/components/examples/NotFoundErrorExample'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              UnauthorizedErrorExample:
+ *                $ref: '#/components/examples/UnauthorizedErrorExample'
  *      500:
  *        description: Internal Server Error
  *        content:
@@ -270,7 +290,7 @@ postRouter.get("/", getPosts);
 postRouter
   .route("/:id")
   .get(getPostById)
-  .patch(verifyJwt, updatePost)
-  .delete(verifyJwt, deletePost);
+  .patch(verifyJwt, checkRoles(UserRole.USER), updatePost)
+  .delete(verifyJwt, checkRoles(UserRole.ADMIN), deletePost);
 
 export default postRouter;

@@ -7,10 +7,15 @@ import { asyncHandler } from "../utils/asyncHandler";
 export const verifyJwt = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+    if (!authHeader && !authHeader?.split(" ")?.[0].startsWith("Bearer ")) {
+      throw new UnauthorizedError({
+          message: "No Auth Header"
+      })
+    }
+    const token = authHeader.split(" ")?.[1];
 
     if (!token) {
-      throw new UnauthorizedError({ message: "Unauthorized" });
+      throw new UnauthorizedError({ message: "No Token: Unauthorized" });
     }
 
     try {

@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source";
 import { Token, TokenStatus } from "../entity/Token.entity";
 import { ITokenRepository, TokenRepository } from "../repositories/token.repository";
 import jwt from "jsonwebtoken";
+import {User} from "../entity/User.entity";
 
 export class TokenService {
   private tokenRepository: ITokenRepository;
@@ -11,15 +12,15 @@ export class TokenService {
     this.tokenRepository = new TokenRepository();
   }
 
-  generateAccessToken(userId: number) {
-    const accessToken = jwt.sign({ id: userId }, config.ACCESS_TOKEN_SECRET, {
+  generateAccessToken(user: Partial<User>) {
+    const accessToken = jwt.sign({ id: user.id, roles: user.roles }, config.ACCESS_TOKEN_SECRET, {
       expiresIn: "30m"
     });
     return accessToken;
   }
 
-  generateRefreshToken(userId: number) {
-    const refreshToken = jwt.sign({ id: userId }, config.REFRESH_TOKEN_SECRET, {
+  generateRefreshToken(user: Partial<User>) {
+    const refreshToken = jwt.sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, {
       expiresIn: "1d"
     });
     return refreshToken;

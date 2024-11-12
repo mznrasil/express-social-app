@@ -1,19 +1,11 @@
-import { config } from "../config/config";
-import { AuthRepository, IAuthRepository } from "../repositories/auth.repository";
-import {
-  ILoginuserSchema,
-  IRefreshTokenSchema,
-  IRegisterUserSchema,
-  IUserSchema
-} from "../schemas/user.schema";
-import {
-  ConflictError,
-  NotFoundError,
-  UnauthorizedError
-} from "../utils/errors";
+import {config} from "../config/config";
+import {AuthRepository, IAuthRepository} from "../repositories/auth.repository";
+import {ILoginuserSchema, IRefreshTokenSchema, IRegisterUserSchema, IUserSchema} from "../schemas/user.schema";
+import {ConflictError, NotFoundError, UnauthorizedError} from "../utils/errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { TokenService } from "./token.service";
+import {TokenService} from "./token.service";
+import {UserRole} from "../entity/User.entity";
 
 export class AuthService {
   private authRepository: IAuthRepository;
@@ -56,8 +48,8 @@ export class AuthService {
       throw new NotFoundError({ message: "Invalid email or password" });
     }
 
-    const accessToken = this.tokenService.generateAccessToken(user.id);
-    const refreshToken = this.tokenService.generateRefreshToken(user.id);
+    const accessToken = this.tokenService.generateAccessToken(user);
+    const refreshToken = this.tokenService.generateRefreshToken(user);
     await this.tokenService.saveToken(user.id, refreshToken);
 
     return {
@@ -82,10 +74,8 @@ export class AuthService {
       throw new UnauthorizedError({ message: "Invalid refresh token" });
     }
 
-    const newAccessToken = this.tokenService.generateAccessToken(decoded.id);
-    const newRefreshTokenHash = this.tokenService.generateRefreshToken(
-      decoded.id
-    );
+    const newAccessToken = this.tokenService.generateAccessToken(decoded);
+    const newRefreshTokenHash = this.tokenService.generateRefreshToken(decoded);
 
     await this.tokenService.updateToken(
       existingToken.id,

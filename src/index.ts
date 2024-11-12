@@ -19,10 +19,13 @@ app.listen(PORT, () => {
 
 app.use(errorHandler);
 
-AppDataSource.initialize()
-  .then(async () => {
-    console.log("Connected to database");
-  })
-  .catch((error: unknown) => {
-    console.log(error);
-  });
+(async () => {
+  AppDataSource.initialize()
+    .then(async () => {
+      console.log("Connected to database");
+    })
+    .catch((error: unknown) => {
+      console.log(error);
+    });
+  // await runSeeders(AppDataSource);
+})();
