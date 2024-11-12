@@ -1,5 +1,24 @@
 import { z } from "zod";
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    UserSchema:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: number
+ *        username:
+ *          type: string
+ *        email:
+ *          type: string
+ *        createdAt:
+ *          type: string
+ *        updatedAt:
+ *          type: string
+ */
+
 export const UserSchema = z.object({
   user: z.object(
     {
@@ -57,3 +76,40 @@ export const RefreshTokenSchema = z.object({
   })
 });
 export type IRefreshTokenSchema = z.infer<typeof RefreshTokenSchema>;
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    LoginUserSchema:
+ *      type: object
+ *      properties:
+ *        email:
+ *          type: string
+ *        password:
+ *          type: string
+ *
+ *    RegisterUserSchema:
+ *      type: object
+ *      properties:
+ *        username:
+ *          type: string
+ *        email:
+ *          type: string
+ *        password:
+ *          type: string
+ *
+ *    RefreshUserSchema:
+ *      type: object
+ *      properties:
+ *        refreshToken:
+ *          type: string
+ *
+ *  examples:
+ *    RegisterUserResponseExample:
+ *      summary: Register User Response
+ *      value:
+ *        data: null
+ *        message: User Registered Successfully
+ *        status: 201
+ */

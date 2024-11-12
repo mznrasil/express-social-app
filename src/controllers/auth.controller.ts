@@ -8,7 +8,7 @@ import {
   UserSchema
 } from "../schemas/user.schema";
 import { ApiResponse } from "../utils/responseWrapper";
-import { AuthService } from "../services/auth";
+import { AuthService } from "../services/auth.service";
 
 const authService = new AuthService();
 

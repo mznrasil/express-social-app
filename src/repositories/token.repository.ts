@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Token } from "../entity/Token";
+import { Token } from "../entity/Token.entity";
 import { AppDataSource } from "../data-source";
 
 export interface ITokenRepository extends Repository<Token> {

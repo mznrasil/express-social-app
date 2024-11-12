@@ -1,6 +1,6 @@
 import { AppDataSource } from "./data-source";
 import express from "express";
-import router from "./routes";
+import router from "./routes/index.route";
 import { errorHandler } from "./middlewares/errorHandler";
 import swaggerDocs from "./utils/swagger";
 import { config } from "./config/config";

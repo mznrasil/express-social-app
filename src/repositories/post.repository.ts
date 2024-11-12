@@ -1,13 +1,14 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { Post } from "../entity/Post";
+import { Post } from "../entity/Post.entity";
 
 export interface IPostRepository extends Repository<Post> {
+  findPostById(id: number): Promise<Post>;
   findAllPosts(query: {
     limit: number;
     offset: number;
     q: string;
-  }): Promise<Post[]>;
+  }): Promise<[Post[], number]>;
 }
 
 export class PostRepository
@@ -21,11 +22,19 @@ export class PostRepository
     this.postRepository = AppDataSource.getRepository(Post);
   }
 
+  async findPostById(id: number): Promise<Post> {
+    return await this.postRepository
+      .createQueryBuilder("posts")
+      .innerJoinAndSelect("posts.user", "user")
+      .where("posts.id = :id", { id })
+      .getOne();
+  }
+
   async findAllPosts(query: {
     limit: number;
     offset: number;
     q: string;
-  }): Promise<Post[]> {
+  }): Promise<[Post[], number]> {
     return await this.postRepository
       .createQueryBuilder("posts")
       .innerJoinAndSelect("posts.user", "user")
@@ -35,6 +44,6 @@ export class PostRepository
       .orderBy("posts.createdAt", "DESC")
       .skip(query.offset)
       .take(query.limit)
-      .getMany();
+      .getManyAndCount();
   }
 }

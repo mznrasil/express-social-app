@@ -1,5 +1,5 @@
 import { config } from "../config/config";
-import { AuthRepository, IAuthRepository } from "../repositories/auth";
+import { AuthRepository, IAuthRepository } from "../repositories/auth.repository";
 import {
   ILoginuserSchema,
   IRefreshTokenSchema,
@@ -13,7 +13,7 @@ import {
 } from "../utils/errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { TokenService } from "./token";
+import { TokenService } from "./token.service";
 
 export class AuthService {
   private authRepository: IAuthRepository;

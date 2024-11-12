@@ -1,7 +1,7 @@
 import { config } from "../config/config";
 import { AppDataSource } from "../data-source";
-import { Token, TokenStatus } from "../entity/Token";
-import { ITokenRepository, TokenRepository } from "../repositories/token";
+import { Token, TokenStatus } from "../entity/Token.entity";
+import { ITokenRepository, TokenRepository } from "../repositories/token.repository";
 import jwt from "jsonwebtoken";
 
 export class TokenService {

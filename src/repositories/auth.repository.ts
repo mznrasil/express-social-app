@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { User } from "../entity/User";
+import { User } from "../entity/User.entity";
 import { AppDataSource } from "../data-source";
 
 export interface IAuthRepository extends Repository<User> {

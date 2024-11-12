@@ -6,7 +6,7 @@ import {
   GetIdSchema,
   DeletePostSchema
 } from "../schemas/post.schema";
-import { PostService } from "../services/post";
+import { PostService } from "../services/post.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/responseWrapper";
 import { zParse } from "../utils/zParse";

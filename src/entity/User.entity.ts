@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { Post } from "./Post";
-import { Token } from "./Token";
+import { Post } from "./Post.entity";
+import { Token } from "./Token.entity";
 
 @Entity("users")
 export class User {

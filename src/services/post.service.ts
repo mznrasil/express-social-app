@@ -1,5 +1,5 @@
-import { Post } from "../entity/Post";
-import { IPostRepository, PostRepository } from "../repositories/post";
+import { Post } from "../entity/Post.entity";
+import { IPostRepository, PostRepository } from "../repositories/post.repository";
 import { IGetPostsSchema, IUpdatePostSchema } from "../schemas/post.schema";
 import {
   BadRequestError,
@@ -29,18 +29,17 @@ export class PostService {
     const offset = parseInt(query.offset);
     const q = query.q;
 
-    const postsPromise = this.postRepository.findAllPosts({ limit, offset, q });
-    const postsCountPromise = this.postRepository.count();
-    const [posts, totalPostsCount] = await Promise.all([
-      postsPromise,
-      postsCountPromise
-    ]);
+    const [posts, count] = await this.postRepository.findAllPosts({
+      limit,
+      offset,
+      q
+    });
 
     const meta = {
       limit: Number(limit),
       page: Math.floor(Number(offset) / Number(limit)) + 1,
-      total: totalPostsCount,
-      totalPages: Math.ceil(totalPostsCount / Number(limit))
+      total: count,
+      totalPages: Math.ceil(count / Number(limit))
     };
 
     return { posts, meta };
@@ -48,7 +47,7 @@ export class PostService {
 
   async getPostById(postId: string): Promise<Post> {
     const id = parseInt(postId);
-    const post = await this.postRepository.findOneBy({ id });
+    const post = await this.postRepository.findPostById(id);
     if (!post) {
       throw new NotFoundError({
         message: "Post not found"
