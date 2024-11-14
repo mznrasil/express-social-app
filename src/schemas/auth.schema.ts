@@ -1,5 +1,5 @@
 import { z } from "zod";
-import {UserRole} from "../entity/User.entity";
+import { UserRole } from "../entity/User.entity";
 
 /**
  * @openapi
@@ -20,7 +20,7 @@ import {UserRole} from "../entity/User.entity";
  *          type: string
  */
 
-export const UserSchema = z.object({
+export const AuthSchema = z.object({
   user: z.object(
     {
       id: z.coerce.number(),
@@ -33,7 +33,7 @@ export const UserSchema = z.object({
     }
   )
 });
-export type IUserSchema = z.infer<typeof UserSchema>;
+export type IUserSchema = z.infer<typeof AuthSchema>;
 
 export const RegisterUserSchema = z.object({
   body: z.object({

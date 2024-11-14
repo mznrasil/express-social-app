@@ -4,17 +4,20 @@ import router from "./routes/index.route";
 import { errorHandler } from "./middlewares/errorHandler";
 import swaggerDocs from "./utils/swagger";
 import { config } from "./config/config";
+import logger from "./logger";
+import { httpLogger } from "./middlewares/httpLogger";
 
 const app = express();
 
 app.use(express.json());
+app.use(httpLogger);
 
 app.use("/api/v1", router);
 
 const PORT = config.APP_PORT || 3000;
 app.listen(PORT, () => {
   swaggerDocs(app, PORT);
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 app.use(errorHandler);
@@ -22,10 +25,9 @@ app.use(errorHandler);
 (async () => {
   AppDataSource.initialize()
     .then(async () => {
-      console.log("Connected to database");
+      logger.info("Connected to database");
     })
     .catch((error: unknown) => {
-      console.log(error);
+      logger.error("Database initialization error: ", error);
     });
-  // await runSeeders(AppDataSource);
 })();

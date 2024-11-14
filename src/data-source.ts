@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import {DataSource, DataSourceOptions} from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { config } from "./config/config";
-import {SeederOptions} from "typeorm-extension";
+import { SeederOptions } from "typeorm-extension";
 import MainSeeder from "./migration/seed/main.seeder";
 
 const options: DataSourceOptions & SeederOptions = {
@@ -14,11 +14,11 @@ const options: DataSourceOptions & SeederOptions = {
   synchronize: false,
   logging: false,
   entities: ["src/entity/**/*.ts"],
-  migrations: ["src/migration/**/*.ts"],
+  migrations: ["src/migration/migrate/**/*.ts"],
   subscribers: [],
   seedTracking: false,
   factories: ["src/factories/**/*.ts"],
-  seeds: [MainSeeder],
-}
+  seeds: [MainSeeder]
+};
 
 export const AppDataSource = new DataSource(options);

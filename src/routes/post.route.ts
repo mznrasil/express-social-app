@@ -9,6 +9,13 @@ import {
 import { verifyJwt } from "../middlewares/verifyJwt";
 import { checkRoles } from "../middlewares/checkRoles";
 import { UserRole } from "../entity/User.entity";
+import {
+  addComment,
+  deletePostCommentById,
+  getPostCommentById,
+  getPostComments,
+  updatePostCommentById
+} from "../controllers/comments.controller";
 
 const postRouter = Router();
 
@@ -292,5 +299,245 @@ postRouter
   .get(getPostById)
   .patch(verifyJwt, checkRoles(UserRole.USER), updatePost)
   .delete(verifyJwt, checkRoles(UserRole.ADMIN), deletePost);
+
+/**
+ * @openapi
+ * /api/v1/posts/{postId}/comments:
+ *  post:
+ *    tags:
+ *    - Posts
+ *    summary: Add a new comment to a post
+ *    description: Add a new comment to a post with the following fields
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        required: true
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/AddCommentSchema'
+ *          examples:
+ *            AddCommentExample:
+ *              summary: Add Comment
+ *              value:
+ *                comment: This is a comment
+ *    responses:
+ *      201:
+ *        description: Created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: object
+ *                  $ref: '#/components/schemas/CommentSchema'
+ *                message:
+ *                  type: string
+ *                status:
+ *                  type: number
+ *            examples:
+ *              AddCommentResponseExample:
+ *                $ref: '#/components/examples/AddCommentResponseExample'
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              BadRequestErrorExample:
+ *                $ref: '#/components/examples/BadRequestErrorExample'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              UnauthorizedErrorExample:
+ *                $ref: '#/components/examples/UnauthorizedErrorExample'
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              InternalServerErrorExample:
+ *                $ref: '#/components/examples/InternalServerErrorExample'
+ *
+ *  get:
+ *    tags:
+ *      - Posts
+ *    summary: Get all post comments
+ *    description: Get all posts with pagination and search
+ *    produces: application/json
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        required: true
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *          minimum: 1
+ *          default: 10
+ *        required: false
+ *        description: Limit the number of posts
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *          minimum: 0
+ *          default: 0
+ *          required: false
+ *        description: Offset the number of posts
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/GetPostsResponseSchema'
+ *            examples:
+ *             GetPostsResponseExample:
+ *              $ref: '#/components/examples/GetPostCommentsResponseExample'
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *             InternalServerErrorExample:
+ *              $ref: '#/components/examples/InternalServerErrorExample'
+ *
+ * /api/v1/posts/{postId}/comments/{commentId}:
+ *  get:
+ *    tags:
+ *      - Posts
+ *    summary: Get single post comment
+ *    produces: application/json
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        required: true
+ *      - in: path
+ *        name: commentId
+ *        required: true
+ *    responses:
+ *      200:
+ *        content:
+ *          application/json:
+ *            schema:
+ *              data:
+ *                $ref: '#/components/schemas/CommentSchema'
+ *              message:
+ *                type: string
+ *              status:
+ *                type: number
+ *            examples:
+ *              GetCommentResponseExample:
+ *                $ref: '#/components/examples/GetCommentResponseExample'
+ *
+ *  patch:
+ *    tags:
+ *      - Posts
+ *    summary: Update post comment
+ *    produces: application/json
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        required: true
+ *      - in: path
+ *        name: commentId
+ *        required: true
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema:
+ *            comment:
+ *              type: string
+ *          examples:
+ *            Payload Example:
+ *              summary: Update Payload
+ *              value:
+ *                comment: "This is a comment"
+ *    responses:
+ *      200:
+ *        content:
+ *          application/json:
+ *            schema:
+ *              data:
+ *                $ref: '#/components/schemas/CommentSchema'
+ *              message:
+ *                type: string
+ *              status:
+ *                type: number
+ *            examples:
+ *              GetCommentResponseExample:
+ *                $ref: '#/components/examples/GetCommentResponseExample'
+ *
+ *  delete:
+ *    tags:
+ *    - Posts
+ *    summary: Delete Comment by ID
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        required: true
+ *      - in: path
+ *        name: commentId
+ *        required: true
+ *    responses:
+ *      204:
+ *        description: No Content
+ *      404:
+ *        description: Not Found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              NotFoundErrorExample:
+ *                $ref: '#/components/examples/NotFoundErrorExample'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              UnauthorizedErrorExample:
+ *                $ref: '#/components/examples/UnauthorizedErrorExample'
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorSchema'
+ *            examples:
+ *              InternalServerErrorExample:
+ *                $ref: '#/components/examples/InternalServerErrorExample'
+ *
+ */
+
+postRouter
+  .route("/:postId/comments")
+  .post(verifyJwt, checkRoles(UserRole.USER), addComment)
+  .get(getPostComments);
+
+postRouter
+  .route("/:postId/comments/:commentId")
+  .get(getPostCommentById)
+  .patch(verifyJwt, checkRoles(UserRole.USER), updatePostCommentById)
+  .delete(
+    verifyJwt,
+    checkRoles(UserRole.USER, UserRole.ADMIN),
+    deletePostCommentById
+  );
 
 export default postRouter;

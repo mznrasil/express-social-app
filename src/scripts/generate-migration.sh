@@ -10,7 +10,7 @@ fi
 MIGRATION_NAME=$1
 
 # Run the TypeORM migration generate command
-npm run typeorm migration:generate -- -d src/data-source.ts src/migration/${MIGRATION_NAME}
+npm run typeorm migration:generate -- -d src/data-source.ts src/migration/migrate/${MIGRATION_NAME}
 
 # Check if the command was successful
 if [ $? -eq 0 ]; then

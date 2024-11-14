@@ -1,4 +1,4 @@
-import {IUserSchema} from "../schemas/user.schema";
+import { IUserSchema } from "../schemas/auth.schema";
 import jwt from "jsonwebtoken";
 
 declare global {

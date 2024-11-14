@@ -1,5 +1,8 @@
 import { Post } from "../entity/Post.entity";
-import { IPostRepository, PostRepository } from "../repositories/post.repository";
+import {
+  IPostRepository,
+  PostRepository
+} from "../repositories/post.repository";
 import { IGetPostsSchema, IUpdatePostSchema } from "../schemas/post.schema";
 import {
   BadRequestError,
@@ -40,7 +43,30 @@ export class PostService {
       page: Math.floor(Number(offset) / Number(limit)) + 1,
       total: count,
       totalPages: Math.ceil(count / Number(limit))
-    };
+    } satisfies Pagination;
+
+    return { posts, meta };
+  }
+
+  async getUserFeed(
+    userId: number,
+    query: IGetPostsSchema["query"]
+  ): Promise<{ posts: Post[]; meta: Pagination }> {
+    const limit = parseInt(query.limit);
+    const offset = parseInt(query.offset);
+    const q = query.q;
+
+    const [posts, count] = await this.postRepository.findUserPosts({
+      userId,
+      query: { limit, offset, q }
+    });
+
+    const meta = {
+      limit: Number(limit),
+      page: Math.floor(Number(offset) / Number(limit)) + 1,
+      total: count,
+      totalPages: Math.ceil(count / Number(limit))
+    } satisfies Pagination;
 
     return { posts, meta };
   }

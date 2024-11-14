@@ -9,6 +9,10 @@ export interface IPostRepository extends Repository<Post> {
     offset: number;
     q: string;
   }): Promise<[Post[], number]>;
+  findUserPosts(args: {
+    userId: number;
+    query: { limit: number; offset: number; q: string };
+  }): Promise<[Post[], number]>;
 }
 
 export class PostRepository
@@ -44,6 +48,26 @@ export class PostRepository
       .orderBy("posts.createdAt", "DESC")
       .skip(query.offset)
       .take(query.limit)
+      .getManyAndCount();
+  }
+
+  async findUserPosts({
+    userId,
+    query
+  }: {
+    userId: number;
+    query: { limit: number; offset: number; q: string };
+  }): Promise<[Post[], number]> {
+    return await this.postRepository
+      .createQueryBuilder("posts")
+      .select(["posts.id", "posts.title", "user.id", "user.username"])
+      .innerJoin("posts.user", "user")
+      .innerJoin("user.following", "following")
+      .where("following.id = :userId", { userId })
+      .orWhere("posts.title ILIKE :q", { q: `%${query.q}%` })
+      .orWhere("posts.tags @> :tag", { tag: [query.q] })
+      .limit(query.limit)
+      .skip(query.offset)
       .getManyAndCount();
   }
 }

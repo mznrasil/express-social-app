@@ -5,8 +5,8 @@ import {
   LoginUserSchema,
   RefreshTokenSchema,
   RegisterUserSchema,
-  UserSchema
-} from "../schemas/user.schema";
+  AuthSchema
+} from "../schemas/auth.schema";
 import { ApiResponse } from "../utils/responseWrapper";
 import { AuthService } from "../services/auth.service";
 
@@ -33,7 +33,7 @@ export const refreshUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
-  const { user } = await zParse(req, UserSchema);
+  const { user } = await zParse(req, AuthSchema);
   await authService.logoutUser(user);
   ApiResponse.noContent(res);
 });

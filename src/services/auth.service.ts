@@ -1,11 +1,23 @@
-import {config} from "../config/config";
-import {AuthRepository, IAuthRepository} from "../repositories/auth.repository";
-import {ILoginuserSchema, IRefreshTokenSchema, IRegisterUserSchema, IUserSchema} from "../schemas/user.schema";
-import {ConflictError, NotFoundError, UnauthorizedError} from "../utils/errors";
+import { config } from "../config/config";
+import {
+  AuthRepository,
+  IAuthRepository
+} from "../repositories/auth.repository";
+import {
+  ILoginuserSchema,
+  IRefreshTokenSchema,
+  IRegisterUserSchema,
+  IUserSchema
+} from "../schemas/auth.schema";
+import {
+  ConflictError,
+  NotFoundError,
+  UnauthorizedError
+} from "../utils/errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {TokenService} from "./token.service";
-import {UserRole} from "../entity/User.entity";
+import { TokenService } from "./token.service";
+import { UserRole } from "../entity/User.entity";
 
 export class AuthService {
   private authRepository: IAuthRepository;

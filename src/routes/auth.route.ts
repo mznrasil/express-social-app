@@ -14,7 +14,7 @@ const authRouter = Router();
  * /api/v1/auth/register:
  *  post:
  *    tags:
- *    - User
+ *    - Auth
  *    summary: Register
  *    description: Register user
  *    requestBody:
@@ -75,7 +75,7 @@ authRouter.post("/register", registerUser);
  * /api/v1/auth/login:
  *  post:
  *    tags:
- *    - User
+ *    - Auth
  *    summary: Login
  *    description: Login user
  *    requestBody:
@@ -128,7 +128,7 @@ authRouter.post("/login", loginUser);
  * /api/v1/auth/refresh:
  *  post:
  *    tags:
- *    - User
+ *    - Auth
  *    summary: Refresh Token
  *    requestBody:
  *      required: true
@@ -189,7 +189,7 @@ authRouter.post("/refresh", refreshUser);
  * /api/v1/auth/logout:
  *  post:
  *    tags:
- *    - User
+ *    - Auth
  *    summary: Logout User
  *    responses:
  *      204:

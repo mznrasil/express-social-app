@@ -7,6 +7,7 @@ import {
   UnauthorizedError
 } from "../utils/errors";
 import { ApiError } from "../utils/responseWrapper";
+import logger from "../logger";
 
 export const errorHandler = (
   err: Error,
@@ -14,7 +15,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  console.error(req.method, req.url, err.name, err.message);
+  logger.error(`${req.method} ${req.url} ${err.name}, ${err.message}`);
 
   if (err instanceof BadRequestError) {
     ApiError.badRequest(res, err.message);

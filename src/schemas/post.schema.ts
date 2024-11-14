@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UserSchema } from "./user.schema";
+import { AuthSchema } from "./auth.schema";
 
 export const CreatePostSchema = z
   .object({
@@ -11,7 +11,7 @@ export const CreatePostSchema = z
       tags: z.array(z.string()).optional()
     })
   })
-  .merge(UserSchema);
+  .merge(AuthSchema);
 export type ICreatePostSchema = z.infer<typeof CreatePostSchema>;
 
 export const UpdatePostSchema = z
@@ -33,7 +33,7 @@ export const UpdatePostSchema = z
       tags: z.array(z.string()).optional()
     })
   })
-  .merge(UserSchema);
+  .merge(AuthSchema);
 export type IUpdatePostSchema = z.infer<typeof UpdatePostSchema>;
 
 export const GetPostsSchema = z.object({
@@ -54,7 +54,7 @@ export const GetIdSchema = z.object({
 });
 export type IGetIdSchema = z.infer<typeof GetIdSchema>;
 
-export const DeletePostSchema = GetIdSchema.merge(UserSchema);
+export const DeletePostSchema = GetIdSchema.merge(AuthSchema);
 export type IDeletePostSchema = z.infer<typeof DeletePostSchema>;
 
 /**

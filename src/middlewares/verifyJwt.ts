@@ -9,8 +9,8 @@ export const verifyJwt = asyncHandler(
     const authHeader = req.headers["authorization"];
     if (!authHeader && !authHeader?.split(" ")?.[0].startsWith("Bearer ")) {
       throw new UnauthorizedError({
-          message: "No Auth Header"
-      })
+        message: "No Auth Header"
+      });
     }
     const token = authHeader.split(" ")?.[1];
 
