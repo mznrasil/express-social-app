@@ -1,12 +1,4 @@
 import { Router } from "express";
-import {
-  createPost,
-  deletePost,
-  getPostById,
-  getPosts,
-  updatePost
-} from "../controllers/post.controller";
-import { verifyJwt } from "../middlewares/verifyJwt";
 import { checkRoles } from "../middlewares/checkRoles";
 import { UserRole } from "../entity/User.entity";
 import {
@@ -16,8 +8,14 @@ import {
   getPostComments,
   updatePostCommentById
 } from "../controllers/comments.controller";
+import { PostController } from "../controllers/post.controller";
+import { verifyJwt } from "../middlewares/verifyJwt";
+import { PostService } from "../services/post.service";
 
 const postRouter = Router();
+
+const postService = new PostService();
+const postController = new PostController(postService);
 
 /**
  * @openapi
@@ -86,7 +84,12 @@ const postRouter = Router();
  *              InternalServerErrorExample:
  *                $ref: '#/components/examples/InternalServerErrorExample'
  */
-postRouter.post("/", verifyJwt, checkRoles(UserRole.USER), createPost);
+postRouter.post(
+  "/",
+  verifyJwt,
+  checkRoles(UserRole.USER),
+  postController.createPost
+);
 
 /**
  * @openapi
@@ -142,7 +145,7 @@ postRouter.post("/", verifyJwt, checkRoles(UserRole.USER), createPost);
  *             InternalServerErrorExample:
  *              $ref: '#/components/examples/InternalServerErrorExample'
  */
-postRouter.get("/", getPosts);
+postRouter.get("/", postController.getPosts);
 
 /**
  * @openapi
@@ -296,9 +299,9 @@ postRouter.get("/", getPosts);
  */
 postRouter
   .route("/:id")
-  .get(getPostById)
-  .patch(verifyJwt, checkRoles(UserRole.USER), updatePost)
-  .delete(verifyJwt, checkRoles(UserRole.ADMIN), deletePost);
+  .get(postController.getPostById)
+  .patch(verifyJwt, checkRoles(UserRole.USER), postController.updatePost)
+  .delete(verifyJwt, checkRoles(UserRole.ADMIN), postController.deletePost);
 
 /**
  * @openapi

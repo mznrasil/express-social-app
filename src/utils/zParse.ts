@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { AnyZodObject, z, ZodError } from "zod";
 import { BadRequestError } from "./errors";
 
@@ -9,7 +9,6 @@ export async function zParse<T extends AnyZodObject>(
   try {
     return await schema.parseAsync(req);
   } catch (err) {
-    console.log("zParse error", err);
     if (err instanceof ZodError) {
       throw new BadRequestError({
         message: err.errors?.[0]?.message
